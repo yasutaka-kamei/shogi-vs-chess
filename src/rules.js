@@ -460,10 +460,10 @@
     const key = positionKey(next);
     next.positions[key] = (next.positions[key] || 0) + 1;
     next.inCheck = kingInCheck(board, next.turn);
-    if (next.positions[key] >= 4) {
-      next.status = { over: true, winner: null, reason: 'repetition' };
-    } else if (legalMoves(next).length === 0) {
+    if (legalMoves(next).length === 0) {
       next.status = { over: true, winner: owner, reason: next.inCheck ? 'checkmate' : 'stalemate' };
+    } else if (next.positions[key] >= 4) {
+      next.status = { over: true, winner: null, reason: 'repetition' };
     }
     return next;
   }

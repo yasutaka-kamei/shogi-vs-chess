@@ -514,8 +514,8 @@
     const d = dropTargets(s, 'FU');
     assert(d.indexOf('44') < 0 && d.indexOf('34') < 0, 'no drop on file with own FU');
     assert(d.indexOf('43') >= 0, 'other files ok');
-    // 8 files x 8 rows (row 0 excluded) minus nothing else occupied in those files
-    eq(d.length, 8 * 8);
+    // 8 files x 8 rows (row 0 excluded) minus the square occupied by OU at (8,8)
+    eq(d.length, 8 * 8 - 1);
   });
   test('nifu: a promoted FU (と) does not count', () => {
     const s = custom([[8, 8, 'OU', S], [0, 0, 'k', G], [5, 4, 'FU', S, { pr: true }]], { turn: S, hands: [{ FU: 1 }, {}] });
@@ -675,8 +675,11 @@
   // =====================================================================
   test('encodeGame/decodeGame round trip', () => {
     let s = SC.newGame();
-    const seq = ['m6555', 'm1636', 'm5545', 'm3645', 'm6757', 'dFU44', 'm5747', 'm1737', 'm7767', 'm0625', 'm6727', 'm2522'];
+    // Includes captures, a drop, a shogi promotion, capture of a promoted piece and a chess-side drop.
+    const seq = ['m6555', 'm1636', 'm5545', 'm3645', 'm6757', 'dFU44', 'm5747', 'm1737', 'm7767', 'm0625',
+      'm6757', 'm4555', 'm5756', 'm5565', 'm5616+', 'm0516', 'm8878', 'dHI55', 'm6858', 'm1627'];
     s = play(s, seq);
+    eq(at(s, 5, 5).t, 'HI'); eq(at(s, 5, 5).o, G); eq(at(s, 5, 5).dp, true);
     const enc = SC.encodeGame(s);
     eq(enc, seq.join(','));
     const d = SC.decodeGame(enc);
