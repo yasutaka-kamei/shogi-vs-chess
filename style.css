@@ -14,7 +14,7 @@
   --capture: rgba(181, 69, 43, 0.55);
   --select: rgba(255, 196, 0, 0.55);
   --last: rgba(90, 140, 220, 0.28);
-  --cell: min(10vw, 7.2vh, 64px);
+  --cell: min(calc((100vw - 60px) / 9), 7.2vh, 64px);
 }
 
 * { box-sizing: border-box; }
@@ -279,3 +279,47 @@ code { background: #f1ebe2; padding: 2px 6px; border-radius: 4px; }
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   max-width: 90vw;
 }
+
+/* ---------- Clocks ---------- */
+.hand-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.clock {
+  font-variant-numeric: tabular-nums;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 8px;
+  background: #f1ebe2;
+  color: var(--muted);
+  min-width: 5.5em;
+  text-align: center;
+}
+.clock.running { background: #e3f3e7; color: #1f6b3a; }
+.clock.low { background: var(--accent-soft); color: var(--accent); }
+.clock.flag { background: var(--accent); color: #fff; }
+.tc-custom { display: inline-flex; align-items: center; gap: 4px; font-size: 0.9rem; }
+.tc-custom input { width: 4.5em; padding: 4px 6px; }
+
+/* ---------- Review ---------- */
+.review-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #eef3fb;
+  border: 1px solid #c9d8ee;
+  border-radius: 10px;
+  padding: 6px 10px;
+  width: 100%;
+  max-width: calc(var(--cell) * 9 + 30px);
+}
+.review-bar .rv-pos { flex: 1; text-align: center; font-size: 0.9rem; }
+.moves li.clickable { cursor: pointer; }
+.moves li.clickable:hover { text-decoration: underline; }
+
+/* ---------- Records ---------- */
+.records { list-style: none; margin: 10px 0 0; padding: 0; max-height: 260px; overflow-y: auto; font-size: 0.9rem; }
+.records li { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-top: 1px solid var(--line); }
+.records .rec-info { flex: 1; min-width: 0; }
+.records .rec-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.records .rec-sub { color: var(--muted); font-size: 0.8rem; }
+.records .none { color: var(--muted); padding: 6px 4px; }

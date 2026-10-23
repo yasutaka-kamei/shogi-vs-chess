@@ -468,13 +468,23 @@
     return next;
   }
 
-  function resign(state, owner) {
+  // End the game with `loser` losing for a non-move reason ('resign' or 'timeout').
+  function endGame(state, loser, reason) {
+    const tag = reason === 'timeout' ? 'T' : 'R';
     const next = Object.assign({}, state, {
-      status: { over: true, winner: 1 - owner, reason: 'resign' },
-      moves: state.moves.concat(['R' + owner]),
+      status: { over: true, winner: 1 - loser, reason: reason },
+      moves: state.moves.concat([tag + loser]),
     });
     delete next._legal;
     return next;
+  }
+
+  function resign(state, owner) {
+    return endGame(state, owner, 'resign');
+  }
+
+  function timeout(state, owner) {
+    return endGame(state, owner, 'timeout');
   }
 
   // ---------- Game serialization (replay of moves) ----------
@@ -489,6 +499,7 @@
     for (const tok of str.split(',')) {
       if (!tok) continue;
       if (tok[0] === 'R') state = resign(state, Number(tok[1]));
+      else if (tok[0] === 'T') state = timeout(state, Number(tok[1]));
       else state = applyMove(state, tok);
     }
     return state;
@@ -524,7 +535,7 @@
     PAWN_PROMOTIONS: PAWN_PROMOTIONS, NAMES: NAMES, PROMOTED_NAMES: PROMOTED_NAMES,
     CHESS_GLYPHS: CHESS_GLYPHS, RANK_KANJI: RANK_KANJI, FILE_ZENKAKU: FILE_ZENKAKU,
     newGame: newGame, legalMoves: legalMoves, legalMovesFrom: legalMovesFrom, legalDrops: legalDrops,
-    applyMove: applyMove, resign: resign, findLegal: findLegal,
+    applyMove: applyMove, resign: resign, timeout: timeout, endGame: endGame, findLegal: findLegal,
     encodeMove: encodeMove, sameMove: sameMove, encodeGame: encodeGame, decodeGame: decodeGame,
     isAttacked: isAttacked, kingInCheck: kingInCheck, findKing: findKing,
     pieceName: pieceName, squareName: squareName, moveToText: moveToText, positionKey: positionKey,

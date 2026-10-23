@@ -730,6 +730,17 @@
     throws(() => SC.applyMove(SC.newGame(), 'dFU44'));
     throws(() => SC.applyMove(SC.newGame(), 'm1434'), 'not Gote\'s turn');
   });
+  test('timeout sets status and is replayed by decodeGame', () => {
+    const s = SC.applyMove(SC.newGame(), 'm6252');
+    const t = SC.timeout(s, G);
+    eq(t.status.over, true); eq(t.status.winner, S); eq(t.status.reason, 'timeout');
+    eq(t.moves[t.moves.length - 1], 'T1');
+    eq(SC.legalMoves(t).length, 0);
+    const d = SC.decodeGame(SC.encodeGame(t));
+    eq(d.status.over, true); eq(d.status.winner, S); eq(d.status.reason, 'timeout');
+    const t2 = SC.timeout(SC.newGame(), S);
+    eq(t2.status.winner, G); eq(t2.moves[0], 'T0');
+  });
   test('applyMove does not mutate the input state', () => {
     const s = SC.newGame();
     const key = SC.positionKey(s);

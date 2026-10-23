@@ -28,6 +28,14 @@
         </div>
       </div>
       <div class="hand hand-bottom" id="hand-bottom"></div>
+      <div class="review-bar hidden" id="review-bar">
+        <button id="rv-first" title="最初">⏮</button>
+        <button id="rv-prev" title="1手戻る">◀</button>
+        <span class="rv-pos" id="rv-pos"></span>
+        <button id="rv-next" title="1手進む">▶</button>
+        <button id="rv-last" title="最後">⏭</button>
+        <button id="rv-close">再生を終了</button>
+      </div>
     </section>
 
     <aside class="panel">
@@ -38,6 +46,23 @@
 
       <div class="card" id="mode-card">
         <h2>対局モード</h2>
+        <div class="mode-row tc-row">
+          <label class="side-select">持ち時間
+            <select id="tc-select">
+              <option value="0,0">なし</option>
+              <option value="180,2">3分 + 2秒</option>
+              <option value="300,5">5分 + 5秒</option>
+              <option value="600,10" selected>10分 + 10秒</option>
+              <option value="900,10">15分 + 10秒</option>
+              <option value="1800,30">30分 + 30秒</option>
+              <option value="custom">カスタム</option>
+            </select>
+          </label>
+          <span id="tc-custom" class="tc-custom hidden">
+            <input id="tc-base" type="number" min="1" max="999" value="10"> 分 +
+            <input id="tc-inc" type="number" min="0" max="600" value="10"> 秒/手
+          </span>
+        </div>
         <div class="mode-row">
           <button id="btn-local" class="primary">この端末で2人対局</button>
         </div>
@@ -83,6 +108,16 @@
           <button id="btn-copy-game">棋譜URLをコピー</button>
         </div>
       </div>
+
+      <div class="card" id="records-card">
+        <h2>保存した棋譜</h2>
+        <p class="hint">終局した対局は自動で保存されます（このブラウザ内）。途中の対局は「今の対局を保存」で保存できます。</p>
+        <div class="actions">
+          <button id="btn-save-record">今の対局を保存</button>
+          <button id="btn-copy-text">棋譜テキストをコピー</button>
+        </div>
+        <ul class="records" id="records"></ul>
+      </div>
     </aside>
   </main>
 
@@ -104,6 +139,7 @@
         <li>将棋の駒は敵陣三段目以内で成れます。ポーンは一番奥の段に着くとクイーン・ルーク・ビショップ・ナイトのどれかに昇格します（取られると持ち駒ではポーンに戻ります）。</li>
         <li>キャスリングとアンパッサンはチェスのルール通り可能です。打ったルークではキャスリングできず、打ったポーンは2マス進めません。</li>
         <li>相手の王将／キングを詰ませば勝ち。合法手がない側は負け（将棋式。ステイルメイトも負け）。同一局面4回で千日手（引き分け）。</li>
+        <li>持ち時間はフィッシャー方式。1手指すごとに加算秒が足されます。時計は先手の初手が指された時点から動き、時間切れは負けです。</li>
       </ul>
       <div class="dialog-buttons"><button id="btn-rules-close" class="primary">閉じる</button></div>
     </div>
