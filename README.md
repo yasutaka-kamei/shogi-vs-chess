@@ -3,7 +3,7 @@
 先手が**将棋**、後手が**チェス**の駒で戦う変則将棋をブラウザで遊べるゲームです。
 友達とオンラインで対局できます（サーバー不要、ブラウザ同士が直接つながります）。
 
-**▶ 遊ぶ: https://yasutaka-kamei.github.io/shogi-vs-chess/**
+**▶ 遊ぶ: https://yasutaka-kamei.github.io/shogi-vs-chess/** （合言葉が必要です。知っている人から聞いてください）
 
 ルールは [将棋ったー「将棋対チェス」](https://shogitter.com/rule/%E5%B0%86%E6%A3%8B%E5%AF%BE%E3%83%81%E3%82%A7%E3%82%B9) に準拠しています
 （YouTube「[将棋YouTuberがチェス、チェスYouTuberが将棋で対局した結果](https://www.youtube.com/watch?v=kbm5O5f8d1g)」で使われていたルールです）。
@@ -49,9 +49,23 @@
 将棋ったーのページに明記されていない細部（ステイルメイト、打ったポーンの2マス移動、打ったルークのキャスリング、ポーンの打ち歩詰め）は上記のとおり決めています。
 変更したい場合は `src/rules.js` を編集してください。
 
+## 合言葉（パスワード）について
+
+公開ページは合言葉で保護しています。`docs/index.html` にはゲーム本体を合言葉で暗号化（PBKDF2 + AES-256-CBC + HMAC-SHA256）したものが入っていて、ブラウザ上で復号して表示します。
+合言葉はリポジトリには含めません。一度入力すると「この端末で覚える」でブラウザに保存され、次回からは自動で開きます。
+
+合言葉を変える・ゲームを更新したときは、ビルドし直して `docs/` をコミットしてください:
+
+```bash
+SITE_PASSWORD=合言葉 python3 build.py
+```
+
+注意: 静的サイトのクライアント側保護なので、短い合言葉だと総当たりで突破される可能性はあります。身内で遊ぶ用途向けです。
+
 ## 技術メモ
 
-- 依存ライブラリなし・ビルド不要の静的サイト（HTML/CSS/JavaScript）。GitHub Pagesでそのまま動きます
+- 依存ライブラリなし・ビルド不要の静的サイト（HTML/CSS/JavaScript）。開発中はリポジトリ直下をそのまま開いて動かせます
+- 公開版は `build.py` で `index.html` + `style.css` + `src/*.js` を1枚のHTMLに束ねて暗号化し、`lock.html`（合言葉入力画面）に埋め込んで `docs/index.html` を生成します。GitHub Pagesは `docs/` だけを公開します
 - オンライン対局は [PeerJS](https://peerjs.com/)（WebRTC）によるP2P接続。PeerJSの公開シグナリングサーバーは接続の仲介だけに使い、着手データは直接やり取りします
 - `src/rules.js` … ルールエンジン（合法手生成・成り・打ち・詰み判定・棋譜のエンコード）
 - `src/app.js` … 画面と対局進行、`src/net.js` … 通信
@@ -61,7 +75,8 @@
 /System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc src/rules.js tests/run.js
 ```
 
-ローカルで動かすには、リポジトリ直下で `python3 -m http.server 8765` を実行して http://localhost:8765 を開いてください。
+ローカルで動かすには、リポジトリ直下で `python3 -m http.server 8765` を実行して http://localhost:8765 を開いてください（合言葉なしの開発版）。
+ロック付きの公開版を確認するには `python3 -m http.server 8766 --directory docs` で http://localhost:8766 を開きます。
 
 ## ライセンス
 

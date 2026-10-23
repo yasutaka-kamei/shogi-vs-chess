@@ -9,6 +9,8 @@
 - `src/app.js` … UI・対局進行・URL共有・localStorage（ホストの局面保存）
 - `src/net.js` … PeerJS によるP2P通信（グローバル `SvcNet`）
 - `tests/run.js` … エンジンのテスト
+- `build.py` / `lock.html` … 公開用ビルド。アプリを1枚のHTMLに束ねて合言葉で暗号化し、`docs/index.html` を生成
+- `docs/` … GitHub Pages の公開元（ここだけが公開される）。生成物なので直接編集しない
 
 ## 座標系（rules.js）
 
@@ -21,7 +23,9 @@
 - 動作確認: `python3 -m http.server 8765` → http://localhost:8765 （`.claude/launch.json` の `static`）
 - テスト: `/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc src/rules.js tests/run.js`
   - この環境に node/npm は無い。テストは jsc で動く plain script のまま保つこと
-- 公開先: GitHub Pages（main ブランチ直下）。push すれば反映される
+- 公開先: GitHub Pages（main ブランチの `docs/`）。アプリを変更したら `SITE_PASSWORD=合言葉 python3 build.py` で `docs/index.html` を再生成してからコミット・push する
+  - 合言葉はリポジトリに書かない（README にも書かない）。ユーザーに確認すること
+  - ロック版の確認: `.claude/launch.json` の `locked`（`python3 -m http.server 8766 --directory docs`）
 
 ## 方針
 
